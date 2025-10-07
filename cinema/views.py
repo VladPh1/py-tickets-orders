@@ -1,16 +1,20 @@
-from datetime import datetime, date, timezone, timedelta, time
+from datetime import datetime, timedelta, time
 
-import pytz
 from django.db.models import Count, F
 from django.utils.decorators import method_decorator
 from django.utils.timezone import make_aware
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework import viewsets
-from rest_framework.authentication import SessionAuthentication
 from rest_framework.pagination import PageNumberPagination
-from rest_framework.permissions import IsAuthenticated
 
-from cinema.models import Genre, Actor, CinemaHall, Movie, MovieSession, Order
+from cinema.models import (
+    Genre,
+    Actor,
+    CinemaHall,
+    Movie,
+    MovieSession,
+    Order
+)
 
 from cinema.serializers import (
     GenreSerializer,
@@ -21,7 +25,9 @@ from cinema.serializers import (
     MovieSessionListSerializer,
     MovieDetailSerializer,
     MovieSessionDetailSerializer,
-    MovieListSerializer, OrderSerializer, OrderListSerializer,
+    MovieListSerializer,
+    OrderSerializer,
+    OrderListSerializer,
 )
 
 
@@ -71,10 +77,10 @@ class MovieViewSet(viewsets.ModelViewSet):
             queryset = queryset.filter(genres__id__in=genres)
         if title:
             queryset = queryset.filter(title__icontains=title)
+        queryset = queryset.distinct()
 
         if self.action in ("list", "retrieve"):
             return queryset.prefetch_related("actors", "genres")
-        queryset = queryset.distinct()
         return queryset
 
 
