@@ -6,6 +6,7 @@ from django.utils.timezone import make_aware
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework import viewsets
 from rest_framework.pagination import PageNumberPagination
+from rest_framework.permissions import IsAuthenticated
 
 from cinema.models import (
     Genre,
@@ -136,6 +137,8 @@ class OrderViewSet(viewsets.ModelViewSet):
     serializer_class = OrderSerializer
     pagination_class = OrderSetPagination
 
+    permission_classes = (IsAuthenticated,)
+
     def get_queryset(self):
         queryset = self.queryset.filter(user=self.request.user)
 
@@ -153,10 +156,10 @@ class OrderViewSet(viewsets.ModelViewSet):
     def get_serializer_class(self):
         serializer = self.serializer_class
 
-        if self.action in ("list", "retrieve"):
+        if self.action == ("list", "retrieve"):
             return OrderListSerializer
 
-        if self.action in ("create", "update"):
+        if self.action == ("create", "update"):
             return OrderSerializer
 
         return serializer
