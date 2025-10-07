@@ -147,19 +147,5 @@ class OrderSerializer(serializers.ModelSerializer):
             return order
 
 
-class MovieSessionInOrderSerializer(MovieSessionListSerializer):
-    movie_session = MovieSessionListSerializer(many=False, read_only=True)
-
-    class Meta:
-        model = MovieSession
-        fields = (
-            "id",
-            "show_time",
-            "movie_title",
-            "cinema_hall_name",
-            "cinema_hall_capacity"
-        )
-
-
 class OrderListSerializer(OrderSerializer):
-    tickets = MovieSessionInOrderSerializer(many=True, read_only=True)
+    tickets = TicketSerializer(many=True, read_only=True)
